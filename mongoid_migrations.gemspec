@@ -20,6 +20,11 @@ Gem::Specification.new do |gem|
   gem.add_runtime_dependency 'mongoid', '> 3.0'
   gem.add_runtime_dependency 'rake'
 
-  gem.add_development_dependency 'ci_tasks'
   gem.add_development_dependency 'fakefs'
+  gem.add_development_dependency 'pry'
+  gem.add_development_dependency 'rspec'
+  gem.add_development_dependency 'magic_encoding'
+  gem.add_development_dependency 'ci_reporter'
+  gem.add_development_dependency 'simplecov'
+  gem.add_development_dependency 'fuubar'
 end

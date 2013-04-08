@@ -1,0 +1,64 @@
+#!/usr/bin/env ruby
+
+class Hooks
+  class GemVersion
+    class << self
+
+      def version_file
+        @version_file ||= File.expand_path(File.join(File.dirname(__FILE__),"../../lib/mongoid_migrations/version.rb"))
+      end
+
+      def add_version_file_to_git
+        add_version_file = `bundle install && git add #{version_file} Gemfile.lock`
+        puts add_version_file
+        unless $?.success?
+          puts add_version_file
+          exit 1
+        end
+      end
+
+      def increment_current_gem_version
+        current_gem_version = `cat #{version_file} | grep -i VERSION |  cut -d" " -f5`
+        current_gem_version = current_gem_version.chomp![1..-2]
+        puts current_gem_version
+
+        exit 1 unless $?.success?
+        version_numbers = current_gem_version.split "."
+
+        #increase minor version
+        if ENV["MINOR"].to_s == true
+          version_numbers[1] = version_numbers[1].to_i + 1
+        else
+          version_numbers[2] = version_numbers[2].to_i + 1
+        end
+
+        final_version = version_numbers.join(".")
+        replace_in_file_cmd = "sed -i \"\" -E 's/#{current_gem_version.chomp}/#{final_version.chomp}/' #{version_file}"
+
+        puts "Incrementing from current version #{current_gem_version} to #{final_version}"
+        replace_in_file = `#{replace_in_file_cmd}`
+        exit 1 unless $?.success?
+      end
+
+      def has_version_args?
+        ENV["MINOR"].to_s == 'true' || ENV["PATCH"].to_s == 'true'
+      end
+
+      def update
+        exit 0 unless has_version_args?
+        increment_current_gem_version
+        add_version_file_to_git
+      end
+    end
+  end
+end
+
+stash_unstaged_changes = `git stash --keep-index`
+git_ws_check = `git diff-index --check --cached HEAD --`
+unless $?.success?
+  puts git_ws_check
+  exit 1
+end
+
+Hooks::GemVersion.update
+pop_unstaged_changes = `git stash pop`
