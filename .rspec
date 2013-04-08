@@ -1,0 +1,7 @@
+--colour
+--format Fuubar
+--format html
+--out spec/reports/index.html
+--format RspecJunitFormatter
+--out spec/reports/rspec.xml
+--profile
