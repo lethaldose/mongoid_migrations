@@ -1,0 +1,10 @@
+require 'bundler'
+Bundler.setup
+
+desc "environment"
+task :environment do
+  Mongoid.load!("config/mongoid.yml")
+end
+
+require File.join(File.dirname(__FILE__), '..','..', 'lib', 'mongoid_migrations')
+require File.join(File.dirname(__FILE__), 'models', 'test_model')

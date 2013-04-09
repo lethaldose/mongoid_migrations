@@ -1,0 +1,24 @@
+development:
+  sessions:
+    default:
+      database: dummy_development
+      hosts:
+        - localhost:27017
+  options:
+    include_type_for_serialization: true
+    scope_overwrite_exception: true
+    raise_not_found_error: false
+    use_utc: true
+
+test:
+  sessions:
+    default:
+      database: dummy_test
+      hosts:
+        - localhost:27017
+  options:
+    include_type_for_serialization: true
+    scope_overwrite_exception: true
+    raise_not_found_error: false
+    use_utc: true
+
