@@ -12,11 +12,9 @@ namespace :db do
     file_name = "db/migrate/#{Time.now.strftime('%Y%m%d%H%M')}_#{args.name}.rb"
     print "creating #{file_name}"
     File.open(file_name, 'w') do |file|
-      file.puts "# -*- encoding : utf-8 -*-"
-      file.puts "class #{camelize(args.name)} < MongoidMigrations::Migration"
-      file.puts "  def self.migrate(collections)"
-      file.puts "  end"
-      file.puts "end"
+      class_name=camelize(args.name)
+      template = ERB.new(File.read(File.join(File.dirname(__FILE__), 'migration_template.erb')))
+      file.puts template.result(binding)
     end
   end
 end
