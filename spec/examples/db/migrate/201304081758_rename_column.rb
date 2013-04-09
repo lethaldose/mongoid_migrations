@@ -15,7 +15,6 @@ class RenameColumn < MongoidMigrations::Migration
         self.send(migration[:task])
       end
     rescue Exception => e
-      require 'pry'; binding.pry
       #Rollback
       @migrations.each do |migration|
         if (migration[:executed])
