@@ -1,21 +1,20 @@
 development:
   sessions:
     default:
-      database: dummy_development
+      database: admin_development
       hosts:
         - localhost:27017
-  options:
-    include_type_for_serialization: true
-    scope_overwrite_exception: true
-    raise_not_found_error: false
-    use_utc: true
 
-test:
-  sessions:
-    default:
-      database: dummy_test
+    batman:
+      database: batman_development
       hosts:
         - localhost:27017
+
+    superman:
+      database: superman_development
+      hosts:
+        - localhost:27017
+
   options:
     include_type_for_serialization: true
     scope_overwrite_exception: true

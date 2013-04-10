@@ -38,9 +38,8 @@ module MongoidMigrations
       finish = migrations.index(target) || migrations.size - 1
       runnable = migrations[0..finish]
       runnable.each do |migration|
-        puts "Migrating to #{migration.name} (#{migration.version})"
-
         next if migrated.include?(migration.version.to_i) or migration.skip?
+        puts "Migrating to #{migration.name} (#{migration.version})"
 
         begin
           migration.process

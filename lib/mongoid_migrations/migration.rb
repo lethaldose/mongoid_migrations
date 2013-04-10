@@ -3,37 +3,43 @@ module MongoidMigrations
   class Migration
     class << self
 
+      def session_for database
+        announce "creating session for #{database}"
+        session = Mongoid::Sessions::Factory.create(database)
+        session.with(safe: true) do |collections|
+          yield collections
+        end
+      end
+
       def process
         announce "migrating"
 
         result = nil
-
         @migration_task_status = []
+
         time = Benchmark.measure do
-          session = ::Mongoid.default_session
-          session.with(safe: true) do |collections|
-            run_migration_tasks(collections)
-          end
+          run_migration_tasks
         end
         announce "migrated (%.4fs)" % time.real; write
         result
       end
 
-      def run_migration_tasks(collections)
+      def run_migration_tasks
         begin
           #Migration
           migration_tasks.each do |migration|
             announce "running migration #{migration}"
             @migration_task_status << migration
-            self.send(migration,collections)
+            self.send(migration)
           end
         rescue Exception => ex
           #Rollback
+          announce ex
+          announce ex.backtrace
           @migration_task_status.each do |migration|
             announce "rollback migration #{migration}"
-            self.send("rollback_#{migration[:task]}".to_sym, collections)
+            self.send("rollback_#{migration}".to_sym)
           end
-          announce ex
           raise ex
         end
       end

@@ -9,6 +9,11 @@ namespace :db do
   desc "generate a new file"
   task :generate_migration_file, :name do |t, args|
     include ActiveSupport::Inflector
+    unless Dir.exists? "db/migrate"
+      Dir.mkdir("db/migrate")
+      puts "Created migration scripts directory: #{File.expand_path('db/migrate')}"
+    end
+
     file_name = "db/migrate/#{Time.now.strftime('%Y%m%d%H%M')}_#{args.name}.rb"
     print "creating #{file_name}"
     File.open(file_name, 'w') do |file|

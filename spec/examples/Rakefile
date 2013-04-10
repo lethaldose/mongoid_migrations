@@ -3,7 +3,9 @@ Bundler.setup
 
 desc "environment"
 task :environment do
+  ENV['RACK_ENV'] ||= 'development'
   Mongoid.load!("config/mongoid.yml")
+  Moped::logger = Logger.new STDOUT
 end
 
 require File.join(File.dirname(__FILE__), '..','..', 'lib', 'mongoid_migrations')
