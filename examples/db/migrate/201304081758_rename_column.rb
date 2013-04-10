@@ -1,6 +1,14 @@
 # -*- encoding : utf-8 -*-
 class RenameColumn < MongoidMigrations::Migration
 
+  #0. Do you really need a migration?
+  #1. select only columns you need
+  #2. no_timeout so long running queries dont timeout
+  #3. dont replace old value with new value unless you can recreate old values.
+  #4. better to rename old column (_old) and add a new column with new value. 
+  #5. mongo update queries are faster.
+  #6. http://docs.mongodb.org/manual/tutorial/optimize-query-performance-with-indexes-and-projections/
+
   def self.migration_tasks
     [:rename_name_to_full_name, :modify_column_value]
   end
@@ -18,11 +26,6 @@ class RenameColumn < MongoidMigrations::Migration
       hulk_collection = collections[:hulks]
 
       3.times { |i| hulk_collection.insert({state: "enlarged-#{i}"}) }
-
-      #1.select only columns you need
-      #2.no_timeout so long running queries dont timeout
-      #3.dont replace old value with new value unless you can recreate old values.
-      #4.better to rename old column (_old) and add a new column with new value
 
       hulk_collection.find({'state' => /enlarged.*/i}).no_timeout.select({_id: 1, state: 1}).each do |doc|
         doc["state"] = doc["state"].sub("enlarged", "expanded")
