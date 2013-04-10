@@ -8,5 +8,5 @@ task :environment do
   Moped::logger = Logger.new STDOUT
 end
 
-require File.join(File.dirname(__FILE__), '..','..', 'lib', 'mongoid_migrations')
+require File.join(File.dirname(__FILE__), '..', 'lib', 'mongoid_migrations')
 require File.join(File.dirname(__FILE__), 'models', 'test_model')
